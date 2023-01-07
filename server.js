@@ -5,7 +5,12 @@ dotenv.config()
 
 mongoose.set('strictQuery', true)
 
+//db and authenticateUser
 import connectDB from './db/connect.js'
+
+//routers
+import authRouter from './routes/authRoutes.js'
+import jobsRouter from './routes/jobsRoutes.js'
 
 //MIDDLEWARE
 //Not-found-middleware (looking for requests)
@@ -15,10 +20,15 @@ import errorHandlerMiddleware from './middleware/error-handler.js'
 import mongoose from 'mongoose'
 
 
+app.use(express.json())
+
 app.get('/', (req, res) => {
     // throw new Error('error') - testing 
    res.send('Welcome!') 
 })
+
+app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/jobs', jobsRouter)
 
 //if all HTTP methods don't exist then use:
 app.use(notFoundMiddleware) 
