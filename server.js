@@ -2,6 +2,8 @@ import express from 'express'
 const app = express()
 import dotenv from 'dotenv'
 dotenv.config()
+// below package replaces try and catch in authController.js - errorhandler is still receiving errors
+import 'express-async-errors'
 
 mongoose.set('strictQuery', true)
 
@@ -33,6 +35,7 @@ app.use('/api/v1/jobs', jobsRouter)
 //if all HTTP methods don't exist then use:
 app.use(notFoundMiddleware) 
 app.use(errorHandlerMiddleware)
+
 const port = process.env.PORT || 4000
 
 //listen port moved to MONGOOSE 
