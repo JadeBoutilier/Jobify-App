@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import validator from 'validator'
+import bcrypt from 'bcryptjs'
 
 const UserSchema = new mongoose.Schema({
     name: {type: String, 
@@ -32,4 +33,17 @@ location: {type: String,
 },
 })
 
+//This allows us to grab the password before saving the document since we want to hash the password before saving. 
+//Must use anonymous function for second parameter - arrow function wont work
+UserSchema.pre('save',async function() {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt)
+})
+
+//JWT = Json Web Token (authorization (making sure user is the same as the one that signed up) - not authentication (loggin in) making sure user and password match)
+// using JWT instead of session / cookies
+// JWT is encoded and serialized - nothing is stored on the server -  stored as a web token on client side
+UserSchema.methods.createJWT = function () {
+    console.log(this)
+}
 export default mongoose.model('User', UserSchema)
