@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 // below package replaces try and catch in authController.js - errorhandler is still receiving errors
 import 'express-async-errors'
+//morgan shows routes and controllers in terminal making it easier to catch spelling mistakes or bad routes
+import morgan from 'morgan'
 
 mongoose.set('strictQuery', true)
 
@@ -21,6 +23,10 @@ import notFoundMiddleware from './middleware/not-found.js' // need .js for SERVE
 import errorHandlerMiddleware from './middleware/error-handler.js'
 import mongoose from 'mongoose'
 
+if(process.env.NODE_ENV !== 'production') {
+    //using 'dev' type - shows colors in terminal
+    app.use(morgan('dev'))
+}
 
 app.use(express.json())
 

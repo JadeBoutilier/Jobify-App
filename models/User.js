@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide password"],
     minLength: 6,
+    //select: false removes password from being sent in the req.body
     select: false,
   },
   lastName: { type: String, maxLength: 20, trim: true, default: "last name" },
@@ -37,10 +38,16 @@ UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-//JWT = Json Web Token (authorization (making sure user is the same as the one that signed up) - not authentication (loggin in) making sure user and password match)
+//JWT = Json Web Token (authorization (making sure user is the same as the one that signed up) - not authentication (login in) making sure user and password match)
 // using JWT instead of session / cookies
 // JWT is encoded and serialized - nothing is stored on the server -  stored as a web token on client side
 UserSchema.methods.createJWT = function () {
   return jwt.sign({ userId: this._id }, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME});
 };
+
+UserSchema.methods.comparePassword = async function(candidatePassword){
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch
+}
+
 export default mongoose.model("User", UserSchema);
