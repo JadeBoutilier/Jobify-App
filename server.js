@@ -21,6 +21,8 @@ import jobsRouter from './routes/jobsRoutes.js'
 import notFoundMiddleware from './middleware/not-found.js' // need .js for SERVER / node imports
 //Error-middleware looking for errors in existing routes - always placed last
 import errorHandlerMiddleware from './middleware/error-handler.js'
+import authenticateUser from './middleware/auth.js'
+
 import mongoose from 'mongoose'
 
 if(process.env.NODE_ENV !== 'production') {
@@ -39,7 +41,7 @@ app.get('/api/v1', (req, res) => {
  })
 
 app.use('/api/v1/auth', authRouter)
-app.use('/api/v1/jobs', jobsRouter)
+app.use('/api/v1/jobs', authenticateUser, jobsRouter)
 
 //if all HTTP methods don't exist then use:
 app.use(notFoundMiddleware) 

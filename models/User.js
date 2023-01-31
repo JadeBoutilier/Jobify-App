@@ -34,6 +34,8 @@ const UserSchema = new mongoose.Schema({
 //This allows us to grab the password before saving the document since we want to hash the password before saving.
 //Must use anonymous function for second parameter - arrow function wont work
 UserSchema.pre("save", async function () {
+  // console.log(this.modifiedPaths());
+  if (!this.isModified('password')) return
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
